@@ -17,10 +17,46 @@ class GameLayout extends React.Component {
     super(props);
 
     this.state = {
-      cells: Array(9).fill(null),
+      cells: Array(9).fill('?'),
       currentPlayer: "player 1"
     };
   }
+
+  update = (index, value) => {
+    const tmp = this.state.cells;
+    tmp[index] = value;
+    this.setState({cells: tmp});
+
+    for (let i = 0; i < this.state.cells.length; i++) {
+      let counter = 0;
+      for (let j = i; j < this.state.cells.length; j++) {
+        if (this.state.cells[i] !== this.state.cells[j]) {
+          break;
+        } else if (this.state.cells[j] !== '?') {
+          counter++;
+        }
+        if (counter === 3) {
+          console.log(this.state.currentPlayer);
+          this.setState({cells: Array(9).fill('?')});
+        }
+      }
+    }
+    const square = Math.sqrt(this.state.cells.length);
+    for (let i = 0; i < this.state.cells.length; i++) {
+      let counter = 0;
+      for (let j = i; j < this.state.cells.length; j+= square) {
+        if (this.state.cells[i] !== this.state.cells[j]) {
+          break;
+        } else if (this.state.cells[j] !== '?') {
+          counter++;
+        }
+        if (counter === 3) {
+          console.log(this.state.currentPlayer);
+          this.setState({cells: Array(9).fill('?')});
+        }
+      }
+    }
+  };
 
   // getDerivedStateFromProps is called before every render,
   // use it to infer new state values from props or state changes.
@@ -32,12 +68,12 @@ class GameLayout extends React.Component {
     return (
       <div
         style={gameLayoutStyle}
-        onClick={() => this.setState({ currentPlayer: "toto" })}
-      >
-        <GameInfo />
-        <Board />
-      </div>
-    );
+        onClick={() => this.setState({ currentPlayer: this.state.currentPlayer === "player 1" ? "player 2" : "player 1" })} >
+        <GameInfo gameState={GameLayout} currentPlayer={this.state.currentPlayer}/>
+        <Board cells={this.state.cells} onClickCell={(cellIndex) => {
+          this.update(cellIndex, this.state.currentPlayer === "player 1" ? '0' : 'X')}} />
+  </div>
+);
   }
 }
 

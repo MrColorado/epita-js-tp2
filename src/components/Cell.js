@@ -12,6 +12,11 @@ const cellStyle = {
   cursor: "pointer"
 };
 
-const Cell = () => <div style={cellStyle}>?</div>;
+const Cell = ({ value = '?', onClick = () => {}, isMouseOver = false}) => (
+  <div
+  style={{...cellStyle, borderRadius: isMouseOver ? 1 : 0}}
+  onClick={onClick}>{value}</div>
+);
 
 export default Cell;
+
