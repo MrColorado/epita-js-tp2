@@ -19,12 +19,22 @@ class GameLayout extends React.Component {
     this.state = {
       cells: Array(9).fill('?'),
       currentPlayer: "player 1",
-      output: ""
+      output: "",
+      finished: false
     };
   }
 
   update = (index, value) => {
+    if (this.state.finished) {
+      return
+    }
     const tmp = this.state.cells;
+    if (tmp[index] === '?') {
+      this.setState({ currentPlayer: this.state.currentPlayer === "player 1" ? "player 2" : "player 1" });
+    }
+    else {
+      return;
+    }
     tmp[index] = value;
     this.setState({cells: tmp});
 
@@ -37,7 +47,8 @@ class GameLayout extends React.Component {
           counter++;
         }
         if (counter === 3) {
-          this.setState({output: "Player " + this.state.cells[i] === 'O' ? "1" : "2" + "have won"});
+          this.setState({output: "Player ".concat(this.state.cells[i] === 'O' ? "1" : "2").concat("have won")});
+          this.setState({finished: false});
         }
       }
     }
@@ -51,16 +62,19 @@ class GameLayout extends React.Component {
           counter++;
         }
         if (counter === 3) {
-          this.setState({output: "Player " + this.state.cells[i] === 'O' ? "1" : "2" + "have won"});
+          this.setState({output: "Player ".concat(this.state.cells[i] === 'O' ? "1" : "2").concat("have won")});
+          this.setState({finished: false});
         }
       }
     }
     if ((tmp[0] === tmp[4] && tmp[4] === tmp[8]) || (tmp[2] === tmp[4] && tmp[4] === tmp[6])) {
       if (this.state.cells[4] === 'O') {
-        this.setState({output: "Player 1 have won"})
+        this.setState({output: "Player 1 have won"});
+        this.setState({finished: false});
       }
       else if (this.state.cells[4] === 'X') {
-        this.setState({output: "Player 2 have won"})
+        this.setState({output: "Player 2 have won"});
+        this.setState({finished: false});
       }
     }
   };
@@ -73,9 +87,7 @@ class GameLayout extends React.Component {
 
   render() {
     return (
-      <div
-        style={gameLayoutStyle}
-        onClick={() => this.setState({ currentPlayer: this.state.currentPlayer === "player 1" ? "player 2" : "player 1" })} >
+      <div style={gameLayoutStyle} >
         <GameInfo gameState={GameLayout} currentPlayer={this.state.currentPlayer}/>
         <Board cells={this.state.cells} onClickCell={(cellIndex) => {
           this.update(cellIndex, this.state.currentPlayer === "player 1" ? 'O' : 'X')}} />
