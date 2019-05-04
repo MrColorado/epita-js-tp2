@@ -36,8 +36,7 @@ class GameLayout extends React.Component {
           counter++;
         }
         if (counter === 3) {
-          console.log(this.state.currentPlayer);
-          this.setState({cells: Array(9).fill('?')});
+          console.log(this.state.cells[i] === 'O' ? 1 : 2);
         }
       }
     }
@@ -51,9 +50,16 @@ class GameLayout extends React.Component {
           counter++;
         }
         if (counter === 3) {
-          console.log(this.state.currentPlayer);
-          this.setState({cells: Array(9).fill('?')});
+          console.log(this.state.cells[i] === 'O' ? 1 : 2);
         }
+      }
+    }
+    if ((tmp[0] === tmp[4] && tmp[4] === tmp[8]) || (tmp[2] === tmp[4] && tmp[4] === tmp[6])) {
+      if (this.state.cells[4] === 'O') {
+        console.log(1)
+      }
+      else if (this.state.cells[4] === 'X') {
+        console.log(2)
       }
     }
   };
@@ -71,7 +77,7 @@ class GameLayout extends React.Component {
         onClick={() => this.setState({ currentPlayer: this.state.currentPlayer === "player 1" ? "player 2" : "player 1" })} >
         <GameInfo gameState={GameLayout} currentPlayer={this.state.currentPlayer}/>
         <Board cells={this.state.cells} onClickCell={(cellIndex) => {
-          this.update(cellIndex, this.state.currentPlayer === "player 1" ? '0' : 'X')}} />
+          this.update(cellIndex, this.state.currentPlayer === "player 1" ? 'O' : 'X')}} />
   </div>
 );
   }
