@@ -23,7 +23,7 @@ function first_player_won(props, state) {
         counter++;
       }
       if (counter === 3) {
-        return tmp[i] === '0' ? "Player 1" : "Player 2";
+        return tmp[i] === 'O' ? "Player 1" : "Player 2";
       }
     }
   }
@@ -37,14 +37,14 @@ function first_player_won(props, state) {
         counter++;
       }
       if (counter === 3) {
-        return tmp[i] === '0' ? "Player 1" : "Player 2";
+        return tmp[i] === 'O' ? "Player 1" : "Player 2";
       }
     }
   }
   if (tmp[4] !== '?') {
     if ((tmp[0] === tmp[4] && tmp[4] === tmp[8])
         || (tmp[2] === tmp[4] && tmp[4] === tmp[6])) {
-      return tmp[4] === '0' ? "Player 1" : "Player 2";
+      return tmp[4] === 'O' ? "Player 1" : "Player 2";
     }
   }
   return "stale";
