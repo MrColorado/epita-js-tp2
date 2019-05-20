@@ -12,6 +12,45 @@ const gameLayoutStyle = {
   margin: "auto"
 };
 
+function first_player_won(props, state) {
+  const tmp = state.cells;
+  for (let i = 0; i < tmp.length; i++) {
+    let counter = 0;
+    for (let j = i; j < tmp.length; j++) {
+      if (tmp[i] !== tmp[j]) {
+        break;
+      } else if (state.cells[j] !== '?') {
+        counter++;
+      }
+      if (counter === 3) {
+        return tmp[i] === '0' ? "Player 1" : "Player 2";
+      }
+    }
+  }
+  const square = Math.sqrt(tmp.length);
+  for (let i = 0; i < tmp.length; i++) {
+    let counter = 0;
+    for (let j = i; j < tmp.length; j+= square) {
+      if (tmp[i] !== tmp[j]) {
+        break;
+      } else if (tmp[j] !== '?') {
+        counter++;
+      }
+      if (counter === 3) {
+        return tmp[i] === '0' ? "Player 1" : "Player 2";
+      }
+    }
+  }
+  if (tmp[4] !== '?') {
+    if ((tmp[0] === tmp[4] && tmp[4] === tmp[8])
+        || (tmp[2] === tmp[4] && tmp[4] === tmp[6])) {
+      return tmp[4] === '0' ? "Player 1" : "Player 2";
+    }
+  }
+  return "stale";
+}
+
+
 class GameLayout extends React.Component {
   constructor(props) {
     super(props);
@@ -19,76 +58,34 @@ class GameLayout extends React.Component {
     this.state = {
       cells: Array(9).fill('?'),
       currentPlayer: "player 1",
-      output: "",
-      finished: false
+      finished: "stale"
     };
   }
 
   update = (index, value) => {
-    if (this.state.finished) {
+    if (this.state.finished !== "stale") {
       return
     }
     const tmp = this.state.cells;
     if (tmp[index] === '?') {
       this.setState({ currentPlayer: this.state.currentPlayer === "player 1" ? "player 2" : "player 1" });
-    }
-    else {
-      return;
-    }
-    tmp[index] = value;
-    this.setState({cells: tmp});
-
-    for (let i = 0; i < this.state.cells.length; i++) {
-      let counter = 0;
-      for (let j = i; j < this.state.cells.length; j++) {
-        if (this.state.cells[i] !== this.state.cells[j]) {
-          break;
-        } else if (this.state.cells[j] !== '?') {
-          counter++;
-        }
-        if (counter === 3) {
-          this.setState({output: "Player ".concat(this.state.cells[i] === 'O' ? "1" : "2").concat("have won")});
-          this.setState({finished: false});
-        }
-      }
-    }
-    const square = Math.sqrt(this.state.cells.length);
-    for (let i = 0; i < this.state.cells.length; i++) {
-      let counter = 0;
-      for (let j = i; j < this.state.cells.length; j+= square) {
-        if (this.state.cells[i] !== this.state.cells[j]) {
-          break;
-        } else if (this.state.cells[j] !== '?') {
-          counter++;
-        }
-        if (counter === 3) {
-          this.setState({output: "Player ".concat(this.state.cells[i] === 'O' ? "1" : "2").concat("have won")});
-          this.setState({finished: false});
-        }
-      }
-    }
-    if ((tmp[0] === tmp[4] && tmp[4] === tmp[8]) || (tmp[2] === tmp[4] && tmp[4] === tmp[6])) {
-      if (this.state.cells[4] === 'O') {
-        this.setState({output: "Player 1 have won"});
-        this.setState({finished: false});
-      }
-      else if (this.state.cells[4] === 'X') {
-        this.setState({output: "Player 2 have won"});
-        this.setState({finished: false});
-      }
+      tmp[index] = value;
+      this.setState({cells: tmp});
     }
   };
+
 
   // getDerivedStateFromProps is called before every render,
   // use it to infer new state values from props or state changes.
   static getDerivedStateFromProps(props, state) {
+    state.finished = first_player_won(props, state);
     return state;
   }
 
   render() {
     return (
       <div style={gameLayoutStyle} >
-        <GameInfo gameState={GameLayout} currentPlayer={this.state.currentPlayer}/>
+        <GameInfo gameState={this.state} currentPlayer={this.state.currentPlayer}/>
         <Board cells={this.state.cells} onClickCell={(cellIndex) => {
           this.update(cellIndex, this.state.currentPlayer === "player 1" ? 'O' : 'X')}} />
         {this.state.output}
