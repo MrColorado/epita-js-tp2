@@ -1,3 +1,7 @@
+issarn_t
+
+Théo Issarni
+
 # TP1 - Tic Tac Toe
 
 In this workshop you will build a Tic Tac Toe game using React.
